@@ -5,6 +5,7 @@
  */
 package GUI;
 
+import BUSSINESS.TaiKhoanChinh;
 import DB.TaiKhoanChinhDB;
 import javax.swing.JOptionPane;
 
@@ -171,11 +172,20 @@ public class DangNhap extends javax.swing.JFrame {
 
         //kiểm tra code, pass : login
         TaiKhoanChinhDB taiKhoanChinhDB = new TaiKhoanChinhDB();
+
         if (taiKhoanChinhDB.isTaiKhoan(code, pass)) {
-            JOptionPane.showMessageDialog(null, "đăng nhập thành công");
-            
-            ManHinhChinh manHinhChinh = new ManHinhChinh();
-            
+//            JOptionPane.showMessageDialog(null, "đăng nhập thành công");
+
+            //lấy thông tin tài khoản chính --> màn hình chính
+            TaiKhoanChinh taiKhoanChinh = TaiKhoanChinhDB.getTaiKhoanChinh(code);
+            ManHinhChinh manHinhChinh = new ManHinhChinh(taiKhoanChinh);
+            manHinhChinh.setVisible(true);
+
+//            java.awt.EventQueue.invokeLater(new Runnable() {
+//                public void run() {
+//                new ManHinhChinh(taiKhoanChinh).setVisible(true);
+//                }
+//            });
         } else {
             JOptionPane.showMessageDialog(null, "sai user/pass");
         }
