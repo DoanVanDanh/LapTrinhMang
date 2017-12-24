@@ -125,7 +125,7 @@
           <SubComponents>
             <Component class="javax.swing.JLabel" name="jLabel1">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Code"/>
+                <Property name="text" type="java.lang.String" value="S&#x1ed1; T&#xe0;i kho&#x1ea3;n"/>
               </Properties>
             </Component>
           </SubComponents>

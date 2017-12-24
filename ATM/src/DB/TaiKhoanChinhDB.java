@@ -84,5 +84,30 @@ public class TaiKhoanChinhDB {
         }
         return taiKhoanChinh;
     }
+    
+    
+    //kiểm tra tồn tại của tài khoản (người nhận)
+     public static boolean taiKhoanCoTonTai(String code) {
+        TaiKhoanChinh taiKhoanChinh = new TaiKhoanChinh();
+        connection = ConnectionDB.getConnection();
+        String sql = "SELECT * FROM `taikhoanchinh` WHERE `code` =?";
+
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, code);
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+              return true;
+            }
+            rs.close();
+            connection.close();
+        } catch (Exception e) {
+            System.out.println("BanDB.java" + e.getMessage());
+        } finally {
+        }
+        return false;
+    }
 
 }

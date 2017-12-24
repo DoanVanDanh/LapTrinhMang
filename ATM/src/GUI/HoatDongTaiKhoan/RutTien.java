@@ -8,23 +8,33 @@ package GUI.HoatDongTaiKhoan;
 import BUSSINESS.TaiKhoanChinh;
 import DB.HoatDongTaiKhoanDB;
 import java.math.BigInteger;
+import javax.swing.JOptionPane;
 
 /**
  *
  * @author Presario CQ45
  */
-public class NopTien extends javax.swing.JFrame {
+public class RutTien extends javax.swing.JFrame {
 
     /**
-     * Creates new form NopTien
+     * Creates new form RutTien
      */
     private TaiKhoanChinh taiKhoan;
+    String soTienMuonRut;
+    String soTienHienCo;
+    
+    boolean thongTinHopLe = true; // kiểm tra thông tin hợp lệ (code người nhận tồn tại hay không + số tiền chuyển có hợp lệ hay không)
+    String thongBao = ""; // thông báo từ hệ thống :  sự hợp lệ của thông tin người dùng nhập vào
 
-    public NopTien(TaiKhoanChinh taiKhoan) {
+    public RutTien(TaiKhoanChinh taiKhoan) {
         this.taiKhoan = taiKhoan;
-        initComponents();
         
-        jTextFieldSoTien.setText(this.taiKhoan.getTenTaiKhoan());
+        initComponents();// init các component trước --> sử dụng
+
+        jLabelHoTen.setText(taiKhoan.getTenTaiKhoan());
+        soTienHienCo = taiKhoan.getSoTien();
+        jLabelSoTienDangCo.setText("số tiền hiện có " + soTienHienCo);
+        
     }
 
     /**
@@ -41,12 +51,13 @@ public class NopTien extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        jButtonOK = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jPanel5 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         jTextFieldSoTien = new javax.swing.JTextField();
         jLabelThongBao = new javax.swing.JLabel();
+        jLabelSoTienDangCo = new javax.swing.JLabel();
         jLabelHoTen = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -56,16 +67,16 @@ public class NopTien extends javax.swing.JFrame {
 
         jPanel2.setBackground(new java.awt.Color(255, 204, 102));
 
-        jLabel1.setText("Nộp tiền vào tài khoản");
+        jLabel1.setText("Rút tiền ");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(27, 27, 27)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel1)
-                .addContainerGap(28, Short.MAX_VALUE))
+                .addGap(45, 45, 45))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -93,16 +104,22 @@ public class NopTien extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        jButton1.setBackground(new java.awt.Color(226, 113, 113));
-        jButton1.setText("OK");
-        jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
+        jButtonOK.setBackground(new java.awt.Color(226, 113, 113));
+        jButtonOK.setText("OK");
+        jButtonOK.setEnabled(false);
+        jButtonOK.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButton1MouseClicked(evt);
+                jButtonOKMouseClicked(evt);
             }
         });
 
         jButton2.setBackground(new java.awt.Color(0, 204, 0));
         jButton2.setText("Cancel");
+        jButton2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton2MouseClicked(evt);
+            }
+        });
 
         jLabel4.setText("Ngân hàng ABC kính chào quý khách");
 
@@ -113,15 +130,25 @@ public class NopTien extends javax.swing.JFrame {
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addGap(103, 103, 103)
                 .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(70, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 36, Short.MAX_VALUE)
         );
 
-        jLabelThongBao.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jTextFieldSoTien.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextFieldSoTienActionPerformed(evt);
+            }
+        });
+
+        jLabelThongBao.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabelThongBao.setForeground(new java.awt.Color(255, 255, 51));
+        jLabelThongBao.setText("Mỗi lần chỉ được rút dưới 5 triệu");
+
+        jLabelSoTienDangCo.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabelSoTienDangCo.setForeground(new java.awt.Color(255, 0, 51));
 
         jLabelHoTen.setBackground(new java.awt.Color(51, 255, 0));
         jLabelHoTen.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
@@ -132,46 +159,49 @@ public class NopTien extends javax.swing.JFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jButtonOK, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(90, 90, 90)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabelThongBao, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jTextFieldSoTien)))
-                        .addGap(167, 167, 167))))
+                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jTextFieldSoTien)))
+                .addGap(167, 167, 167))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(53, 53, 53)
+                .addComponent(jLabelSoTienDangCo, javax.swing.GroupLayout.PREFERRED_SIZE, 295, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabelHoTen, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabelThongBao, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 371, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabelHoTen, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabelHoTen, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(31, 31, 31)
+                .addGap(16, 16, 16)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jTextFieldSoTien)
                     .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(36, 36, 36)
-                .addComponent(jLabelThongBao)
-                .addGap(18, 18, 18)
+                .addGap(16, 16, 16)
+                .addComponent(jLabelSoTienDangCo, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(13, 13, 13)
+                .addComponent(jLabelThongBao, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 59, Short.MAX_VALUE)
+                    .addComponent(jButtonOK, javax.swing.GroupLayout.DEFAULT_SIZE, 59, Short.MAX_VALUE)
                     .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
 
@@ -189,26 +219,51 @@ public class NopTien extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
+    private void jButtonOKMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonOKMouseClicked
         // TODO add your handling code here:
-        String soTien = jTextFieldSoTien.getText();
-
-        try {
-            BigInteger soTienDaNap = new BigInteger(soTien);
-            if ( soTienDaNap.longValue() > 0) {
-                System.out.println(soTienDaNap.longValue());
+       
+            //khi số tiền rút <= số tiền hiện có: mới cho rút
+            if (thongTinHopLe == true) {                
+                HoatDongTaiKhoanDB.rutTien(taiKhoan.getCode(), soTienMuonRut);
                 
-
-                HoatDongTaiKhoanDB.napTien(taiKhoan.getCode(), soTien);
-                
-                String soTienSauKhiNop = HoatDongTaiKhoanDB.getSoTien(taiKhoan.getCode());
-                jLabelThongBao.setText("nạp tiền thành công. Số tiền hiện tại "+  soTienSauKhiNop );
+                String soTienSauKhiRut = HoatDongTaiKhoanDB.getSoTien(taiKhoan.getCode());
+                jLabelThongBao.setText("rút tiền thành công " +soTienMuonRut +"vnđ \n " );
+                 jLabelSoTienDangCo.setText("số tiền hiện có " + soTienSauKhiRut);
             }
-        } catch (Exception ex) {
-            System.out.println("GUI.HoatDongTaiKhoan.NopTien.jButton1MouseClicked()" + ex.getMessage());
-        }
 
-    }//GEN-LAST:event_jButton1MouseClicked
+    }//GEN-LAST:event_jButtonOKMouseClicked
+
+    private void jTextFieldSoTienActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldSoTienActionPerformed
+        // TODO add your handling code here:
+        soTienMuonRut = jTextFieldSoTien.getText();
+        
+        try {
+            BigInteger soTienMuonRut = new BigInteger(this.soTienMuonRut);
+            BigInteger soTienHienCo = new BigInteger(this.soTienHienCo);
+
+            //khi số tiền rút <= số tiền hiện có: mới cho rút
+            if (soTienMuonRut.longValue() <= soTienHienCo.longValue() && soTienMuonRut.longValue()<5000000) {
+
+//                jButtonOK.setSelected(true);//nút click ok: mở
+                jButtonOK.setEnabled(true);
+                thongBao = "bạn đã có thể rút số tiền đã nhập";
+                thongTinHopLe = true;
+                
+            } else {
+                thongBao = "số tiền đã nhập > số tiền đang có hoặc > 5 triệu";
+            }
+            
+            jLabelThongBao.setText(thongBao);
+            
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+    }//GEN-LAST:event_jTextFieldSoTienActionPerformed
+
+    private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_jButton2MouseClicked
 
     /**
      * @param args the command line arguments
@@ -227,31 +282,32 @@ public class NopTien extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(NopTien.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(RutTien.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(NopTien.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(RutTien.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(NopTien.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(RutTien.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(NopTien.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(RutTien.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-//                new NopTien().setVisible(true);
+//                new RutTien().setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButtonOK;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabelHoTen;
+    private javax.swing.JLabel jLabelSoTienDangCo;
     private javax.swing.JLabel jLabelThongBao;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
