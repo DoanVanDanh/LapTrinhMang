@@ -5,7 +5,6 @@
  */
 package BUSSINESS;
 
-import java.math.BigInteger;
 
 /**
  *
@@ -16,12 +15,12 @@ public class TaiKhoanChinh {
     private String tenTaiKhoan;
     private String matKhau;
     private String email;
-    private BigInteger soTien;
+    private String soTien;
 
     public TaiKhoanChinh() {
     }
 
-    public TaiKhoanChinh(String code, String tenTaiKhoan, String matKhau, String email, BigInteger soTien) {
+    public TaiKhoanChinh(String code, String tenTaiKhoan, String matKhau, String email, String soTien) {
         this.code = code;
         this.tenTaiKhoan = tenTaiKhoan;
         this.matKhau = matKhau;
@@ -61,11 +60,11 @@ public class TaiKhoanChinh {
         this.email = email;
     }
 
-    public BigInteger getSoTien() {
+    public String getSoTien() {
         return soTien;
     }
 
-    public void setSoTien(BigInteger soTien) {
+    public void setSoTien(String soTien) {
         this.soTien = soTien;
     }
     

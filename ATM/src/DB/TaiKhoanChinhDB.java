@@ -5,6 +5,8 @@
  */
 package DB;
 
+import BUSSINESS.TaiKhoanChinh;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -20,6 +22,7 @@ public class TaiKhoanChinhDB {
     public TaiKhoanChinhDB() {
     }
 
+    //kiểm tra đăng nhập
     public boolean isTaiKhoan(String code, String matKhau) {
         connection = ConnectionDB.getConnection();
         String sql = "select code,matkhau from TaiKhoanChinh";
@@ -47,7 +50,39 @@ public class TaiKhoanChinhDB {
             System.out.println(e.getMessage());
         } finally {
         }
-            return false;
-        }
-
+        return false;
     }
+
+    //lấy thông tin tài khoản đó
+    public static TaiKhoanChinh getTaiKhoanChinh(String code) {
+        TaiKhoanChinh taiKhoanChinh = new TaiKhoanChinh();
+        connection = ConnectionDB.getConnection();
+        String sql = "SELECT `code`,`ten`,`matkhau`,`email`,`soTien` \n"
+                + "FROM taikhoanchinh \n"
+                + "\n"
+                + "where code=?";
+
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, code);
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+              
+                String tenTaiKhoan = rs.getString(2);
+                String matKhau = rs.getString(3);
+                String email= rs.getString(4);
+                String soTien = rs.getString(5);
+                taiKhoanChinh = new TaiKhoanChinh(code, tenTaiKhoan, matKhau, email, soTien);
+            }
+            rs.close();
+            connection.close();
+        } catch (Exception e) {
+            System.out.println("BanDB.java" + e.getMessage());
+        } finally {
+        }
+        return taiKhoanChinh;
+    }
+
+}
